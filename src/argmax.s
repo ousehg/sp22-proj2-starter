@@ -16,15 +16,45 @@
 # =================================================================
 argmax:
 	# Prologue
+	li a2, 1
+	blt a1, a2, argmax_error
+	# index of array
+	li a3, 0
+	# index of max
+	li a4, 0
+	# value of max
+	lw a5, 0(a0)
+	lw a6, 0(a0)
+	blt a3, a1, loop_start
+
+	ret 
 
 
 loop_start:
+	bge a3, a1, loop_end
+	# load current value
+	lw a6, 0(a0)
+	bge a5, a6, loop_continue
+	# update index of max
+	addi a4, a3, 0
+	# update value of max
+	add a5, a6, zero
+	j loop_start
 
 
 loop_continue:
+	# update index of array
+	addi a3, a3, 1
+	# update pointer of array
+	addi a0, a0, 4
+	j loop_start
 
 
 loop_end:
 	# Epilogue
-
+	addi a0, a4, 0
 	ret
+
+argmax_error:
+	li a0, 36
+	j exit
