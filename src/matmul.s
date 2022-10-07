@@ -26,32 +26,116 @@
 matmul:
 
 	# Error checks
+	li t0, 1
+	blt a1, t0, error
+	blt a2, t0, error
+	blt a4, t0, error
+	blt a5, t0, error
+	bne a1, a5, error
+	bne a2, a4, error
 
 
 	# Prologue
+	li t0, 0
+	li t1, 0
+	addi sp, sp, -12
+	sw ra, 0(sp)
 
+	jal ra, outer_loop_start
+
+	# Epilogue
+
+	lw ra, 0(sp)
+	addi sp, sp, 12
+
+	ret
 
 outer_loop_start:
+	beq t0, a1, outer_loop_end
 
+	# inner loop
+	j inner_loop_start
 
+	# update t0
+	addi t0, t0, 1
+	j outer_loop_start 
 
 
 inner_loop_start:
+	beq t1, a5, inner_loop_end
 
+	# Prologue
+	addi sp, sp, -40
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw t0, 32(sp)
+	sw t1, 36(sp)
 
+	# index of a6
+	mul t2, t0, a2
+	add t2, t2, t1 
 
+	# update pointer of a6
+	li t3, 4
+	mul t2, t2, t3 
+	add a6, a6, t2
+	sw a6, 40(sp)
 
+	# update pointer of a1
+	mul t4, t0, a2
+	mul t4, t4, t3
+	add a0, a0, t4
 
+	# update pointer of a2
+	mul t5, t1, t3
+	add a1, a3, t5
 
+	# set number of elements
+	addi a2, a2, 0
 
+	# set stride of a1
+	li a3, 1
 
+	# set stride of a2 
+	addi a4, a5, 0
 
+	# product 
+	jal ra, dot
 
+	# update a6
+	lw a6, 40(sp)
+	sw a0, 0(a6)
 
+	# Epilogue
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw t0, 32(sp)
+	lw t1, 36(sp)
+	addi sp, sp, 40
+	
+	# update t1
+	addi t1, t1, 1
+	j inner_loop_start
 
 inner_loop_end:
 
-
+	# reset t1
+	li t1, 0
+	addi t0, t0, 1
+	j outer_loop_start
 
 
 outer_loop_end:
@@ -60,4 +144,9 @@ outer_loop_end:
 	# Epilogue
 
 
+
 	ret
+
+error:
+	li a0, 38
+	j exit
