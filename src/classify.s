@@ -24,31 +24,459 @@
 # Usage:
 #   main.s <M0_PATH> <M1_PATH> <INPUT_PATH> <OUTPUT_PATH>
 classify:
-	# Read pretrained m0
+	li t0, 5
+	bne a0, t0, args_error
+	addi sp, sp, -16
+	sw s0, 0(sp)
+	sw s1, 4(sp)
+	sw s2, 8(sp)
+	sw s3, 12(sp)
 
+	# Read pretrained m0
+	addi sp, sp, -12
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+
+	lw a0, 4(a1)
+	jal ra, read_matrix
+	mv a3, a0 # m0 pointer
+	mv a4, a1 # m0 rows
+	mv a5, a2 # mo cols
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	addi sp, sp, 12
 
 	# Read pretrained m1
-
+	addi sp, sp, -28
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	lw a0, 8(a1)
+	jal ra, read_matrix
+	mv a6, a0 # m1 pointer
+	mv a7, a1 # m1 rows
+	mv s0, a2 # m1 cols
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	addi sp, sp, 28
 
 	# Read input matrix
-
+	addi sp, sp, -36
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	lw a0, 12(a1)
+	jal ra, read_matrix
+	mv s1, a0 # input pointer
+	mv s2, a1 # input rows
+	mv s3, a2  # input cols 
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	addi sp, sp, 36
 
 	# Compute h = matmul(m0, input)
+	addi sp, sp, -48
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
 
+	mul t0, a4, s3
+	li t1, 4
+	mul t0, t0, t1
+	jal ra, malloc
+	beq a0, zero, malloc_error
+	mv t0, a0
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	addi sp, sp, 48
+
+	addi sp, sp, -48
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+
+	mv a0, a3
+	mv a1, a4
+	mv a2, a5
+	mv a3, s1
+	mv a4, s2
+	mv a5, s3
+	mv a6, t0
+	jal ra, matmul
+	mv t0, a6
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	addi sp, sp, 48
 
 	# Compute h = relu(h)
+	addi sp, sp, -48
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+
+	mv a0, t0
+	mul t1, a4, s3
+	li t2, 4
+	mul t1, t1, t2
+	mv a1, t1
+	jal ra, relu
+	mv t0, a0
+	
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	addi sp, sp, 48
 
 
 	# Compute o = matmul(m1, h)
+	addi sp, sp, -52
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+	sw t0, 52(sp)
+
+	mul t0, a7, s3
+	li t1, 4
+	mul t0, t0, t1
+	jal ra, malloc
+	beq a0, zero, malloc_error
+	mv t1, a0
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	lw t0, 52(sp)
+	addi sp, sp, 52
+
+	addi sp, sp, -52
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+	sw t0, 52(sp)
+
+	mv a0, a6
+	mv a1, a7
+	mv a2, s0
+	mv a3, t0
+	mv a4, a4
+	mv a5, s3
+	mv a6, t1
+	jal ra, matmul
+	mv t1, a6
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	lw t0, 52(sp)
+	addi sp, sp, 52
 
 
 	# Write output matrix o
+	addi sp, sp, -56
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+	sw t0, 52(sp)
+	sw t1, 56(sp)
 
+	lw a0, 16(a1)
+	mv a1, t1
+	mv a2, a7
+	mv a3, s3
+	jal ra, write_matrix
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	lw t0, 52(sp)
+	lw t1, 56(sp)
+	addi sp, sp, 56
 
 	# Compute and return argmax(o)
+	addi sp, sp, -56
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+	sw t0, 52(sp)
+	sw t1, 56(sp)
 
+	mv a0, t1
+	mul t2, a7, s3
+	mv a1, t2
+	jal ra, argmax
+	mv t3, a0
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	lw t0, 52(sp)
+	lw t1, 56(sp)
+	addi sp, sp, 56
+
+	# free t0
+	addi sp, sp, -56
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+	sw t1, 52(sp)
+	sw t2, 56(sp)
+
+	mv a0, t0
+	jal ra, free
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	lw t1, 52(sp)
+	lw t2, 56(sp)
+	addi sp, sp, 56
+
+	# free t1
+	addi sp, sp, -52
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
+	sw a6, 28(sp)
+	sw a7, 32(sp)
+	sw s0, 36(sp)
+	sw s1, 40(sp)
+	sw s2, 44(sp)
+	sw s3, 48(sp)
+	sw t2, 52(sp)
+
+	mv a0, t1
+	jal ra, free
+
+	lw ra, 0(sp)
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	lw a2, 12(sp)
+	lw a3, 16(sp)
+	lw a4, 20(sp)
+	lw a5, 24(sp)
+	lw a6, 28(sp)
+	lw a7, 32(sp)
+	lw s0, 36(sp)
+	lw s1, 40(sp)
+	lw s2, 44(sp)
+	lw s3, 48(sp)
+	lw t2, 52(sp)
+	addi sp, sp, 52
 
 	# If enabled, print argmax(o) and newline
 
+	sw t2, 16(sp)
+	mv a0, t2
+	# beq a2, zero, print_int
+	lw s0, 0(sp)
+	lw s1, 4(sp)
+	lw s2, 8(sp)
+	lw s3, 12(sp)
+	lw a0, 16(sp)
+	addi sp, sp, 16
 
 	ret
+
+args_error:
+	li a0, 31
+	j exit
+
+malloc_error: 
+	li a0, 26
+	j exit
