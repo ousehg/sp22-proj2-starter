@@ -26,13 +26,15 @@
 classify:
 	li t0, 5
 	bne a0, t0, args_error
-	addi sp, sp, -16
+	addi sp, sp, -12
 	sw s0, 0(sp)
 	sw s1, 4(sp)
 	sw s2, 8(sp)
 	sw s3, 12(sp)
 
+	# ===========================
 	# Read pretrained m0 - malloc
+	# ===========================
 	addi sp, sp, -12
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -50,7 +52,10 @@ classify:
 	lw a2, 12(sp)
 	addi sp, sp, 12
 
+	# ===========================
 	# Read pretrained m0 - read matrix
+	# ===========================
+
 	addi sp, sp, -16
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -74,8 +79,10 @@ classify:
 	lw a2, 12(sp)
 	addi sp, sp, 16
 
+	# ===========================
 	# Read pretrained m0 - free
-	addi sp, sp, -28
+	# ===========================
+	addi sp, sp, -24
 	sw ra, 0(sp)
 	sw a0, 4(sp)
 	sw a1, 8(sp)
@@ -94,9 +101,11 @@ classify:
 	lw a3, 16(sp)
 	lw a4, 20(sp)
 	lw a5, 24(sp)
-	addi sp, sp, 28
+	addi sp, sp, 24
 
+	# ===========================
 	# Read pretrained m1 - malloc
+	# ===========================
 	addi sp, sp, -28
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -120,7 +129,9 @@ classify:
 	lw a5, 24(sp)
 	addi sp, sp, 28
 
+	# ===========================
 	# Read pretrained m1 - read matrix
+	# ===========================
 	addi sp, sp, -28
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -150,7 +161,9 @@ classify:
 	lw a5, 24(sp)
 	addi sp, sp, 28
 
+	# ===========================
 	# Read pretrained m1 - free
+	# ===========================
 	addi sp, sp, -36
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -178,7 +191,9 @@ classify:
 	lw s0, 36(sp)
 	addi sp, sp, 36
 
+	# ===========================
 	# Read input matrix -- malloc
+	# ===========================
 	addi sp, sp, -36
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -208,7 +223,9 @@ classify:
 	lw s0, 36(sp)
 	addi sp, sp, 36
 
+	# ===========================
 	# Read input matrix -- read
+	# ===========================
 	addi sp, sp, -40
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -244,7 +261,9 @@ classify:
 	lw s0, 36(sp)
 	addi sp, sp, 40
 
+	# ===========================
 	# Read input matrix -- free
+	# ===========================
 	addi sp, sp, -48
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -278,7 +297,9 @@ classify:
 	lw s3, 48(sp)
 	addi sp, sp, 48
 
+	# ===========================
 	# Compute h = matmul(m0, input) - malloc
+	# ===========================
 	addi sp, sp, -48
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -317,7 +338,9 @@ classify:
 	lw s3, 48(sp)
 	addi sp, sp, 48
 
+	# ===========================
 	# Compute h = matmul(m0, input) - matmul
+	# ===========================
 	addi sp, sp, -48
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -358,7 +381,9 @@ classify:
 	lw s3, 48(sp)
 	addi sp, sp, 48
 
+	# ===========================
 	# Compute h = relu(h)
+	# ===========================
 	addi sp, sp, -48
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -397,8 +422,9 @@ classify:
 	lw s3, 48(sp)
 	addi sp, sp, 48
 
-
+	# ===========================
 	# Compute o = matmul(m1, h) - malloc
+	# ===========================
 	addi sp, sp, -52
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -438,7 +464,9 @@ classify:
 	lw t0, 52(sp)
 	addi sp, sp, 52
 
+	# ===========================
 	# Compute o = matmul(m1, h) - matmul
+	# ===========================
 	addi sp, sp, -52
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -523,7 +551,9 @@ classify:
 	lw t1, 56(sp)
 	addi sp, sp, 56
 
+	# ===========================
 	# Compute and return argmax(o)
+	# ===========================
 	addi sp, sp, -56
 	sw ra, 0(sp)
 	sw a0, 4(sp)
@@ -640,15 +670,13 @@ classify:
 
 	# If enabled, print argmax(o) and newline
 
-	sw t2, 16(sp)
 	mv a0, t2
 	# beq a2, zero, print_int
 	lw s0, 0(sp)
 	lw s1, 4(sp)
 	lw s2, 8(sp)
 	lw s3, 12(sp)
-	lw a0, 16(sp)
-	addi sp, sp, 16
+	addi sp, sp, 12
 
 	ret
 

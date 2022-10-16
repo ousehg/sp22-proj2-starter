@@ -34,31 +34,16 @@ matmul:
 	# bne a1, a5, error
 	bne a2, a4, error
 
-
 	# Prologue
-	li t0, 0
-	li t1, 0
 	addi sp, sp, -4
 	sw ra, 0(sp)
 
-	jal ra, outer_loop_start
-
-	# Epilogue
-
-	lw ra, 0(sp)
-	addi sp, sp, 4
-
-	ret
+	li t0, 0
 
 outer_loop_start:
 	beq t0, a1, outer_loop_end
 
-	# inner loop
-	j inner_loop_start
-
-	# update t0
-	addi t0, t0, 1
-	j outer_loop_start 
+	li t1, 0
 
 
 inner_loop_start:
@@ -133,8 +118,6 @@ inner_loop_start:
 
 inner_loop_end:
 
-	# reset t1
-	li t1, 0
 	addi t0, t0, 1
 	j outer_loop_start
 
@@ -143,8 +126,8 @@ outer_loop_end:
 
 
 	# Epilogue
-
-
+	lw ra, 0(sp)
+	addi sp, sp, 4
 
 	ret
 
