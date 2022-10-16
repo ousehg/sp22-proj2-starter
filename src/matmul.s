@@ -31,14 +31,14 @@ matmul:
 	blt a2, t0, error
 	blt a4, t0, error
 	blt a5, t0, error
-	bne a1, a5, error
+	# bne a1, a5, error
 	bne a2, a4, error
 
 
 	# Prologue
 	li t0, 0
 	li t1, 0
-	addi sp, sp, -12
+	addi sp, sp, -4
 	sw ra, 0(sp)
 
 	jal ra, outer_loop_start
@@ -46,7 +46,7 @@ matmul:
 	# Epilogue
 
 	lw ra, 0(sp)
-	addi sp, sp, 12
+	addi sp, sp, 4
 
 	ret
 
@@ -78,7 +78,8 @@ inner_loop_start:
 	sw t1, 36(sp)
 
 	# index of a6
-	mul t2, t0, a2
+	# mul t2, t0, a2
+	mul t2, t0, a5
 	add t2, t2, t1 
 
 	# update pointer of a6
