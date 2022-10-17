@@ -35,90 +35,73 @@ matmul:
 	bne a2, a4, error
 
 	# Prologue
-	addi sp, sp, -4
+	addi sp, sp, -40
 	sw ra, 0(sp)
+	sw s0, 4(sp)
+	sw s1, 8(sp)
+	sw s2, 12(sp)
+	sw s3, 16(sp)
+	sw s4, 20(sp)
+	sw s5, 24(sp)
+	sw s6, 28(sp)
+	sw s7, 32(sp)
+	sw s8, 36(sp)
 
-	li t0, 0
+	mv s0, a0
+	mv s1, a1
+	mv s2, a2
+	mv s3, a3
+	mv s4, a4
+	mv s5, a5
+	mv s6, a6
+	li s7, 0 # index of rows
 
 outer_loop_start:
-	beq t0, a1, outer_loop_end
+	beq s7, s1, outer_loop_end 
 
-	li t1, 0
+	li s8, 0 # index of cols
 
 
 inner_loop_start:
-	beq t1, a5, inner_loop_end
+	beq s8, s5, inner_loop_end
 
-	# Prologue
-	addi sp, sp, -40
-	sw ra, 0(sp)
-	sw a0, 4(sp)
-	sw a1, 8(sp)
-	sw a2, 12(sp)
-	sw a3, 16(sp)
-	sw a4, 20(sp)
-	sw a5, 24(sp)
-	sw a6, 28(sp)
-	sw t0, 32(sp)
-	sw t1, 36(sp)
+	# set first array
+	mul t0, s7, s2
+	li t1, 4
+	mul t0, t0, t1
+	add a0, s0, t0
 
-	# index of a6
-	# mul t2, t0, a2
-	mul t2, t0, a5
-	add t2, t2, t1 
-
-	# update pointer of a6
-	li t3, 4
-	mul t2, t2, t3 
-	add a6, a6, t2
-	sw a6, 40(sp)
-
-	# update pointer of a1
-	mul t4, t0, a2
-	mul t4, t4, t3
-	add a0, a0, t4
-
-	# update pointer of a2
-	mul t5, t1, t3
-	add a1, a3, t5
+	# set second array
+	li t1, 4
+	mul t0, s8, t1
+	add a1, s3, t0
 
 	# set number of elements
-	addi a2, a2, 0
+	mv a2, s2
 
 	# set stride of a1
 	li a3, 1
 
 	# set stride of a2 
-	addi a4, a5, 0
+	mv a4, s5
 
 	# product 
 	jal ra, dot
 
-	# update a6
-	lw a6, 40(sp)
-	sw a0, 0(a6)
+	# update d
+	sw a0, 0(s6)
 
-	# Epilogue
-
-	lw ra, 0(sp)
-	lw a0, 4(sp)
-	lw a1, 8(sp)
-	lw a2, 12(sp)
-	lw a3, 16(sp)
-	lw a4, 20(sp)
-	lw a5, 24(sp)
-	lw a6, 28(sp)
-	lw t0, 32(sp)
-	lw t1, 36(sp)
-	addi sp, sp, 40
+	# update pointer of d
+	li t1, 4
+	add s6, s6, t1
 	
-	# update t1
-	addi t1, t1, 1
+	# update s8
+	addi s8, s8, 1
 	j inner_loop_start
 
 inner_loop_end:
 
-	addi t0, t0, 1
+	addi s7, s7, 1
 	j outer_loop_start
 
 
@@ -126,8 +109,18 @@ outer_loop_end:
 
 
 	# Epilogue
+
 	lw ra, 0(sp)
-	addi sp, sp, 4
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	lw s2, 12(sp)
+	lw s3, 16(sp)
+	lw s4, 20(sp)
+	lw s5, 24(sp)
+	lw s6, 28(sp)
+	lw s7, 32(sp)
+	lw s8, 36(sp)
+	addi sp, sp, 40
 
 	ret
 
