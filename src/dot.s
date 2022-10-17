@@ -31,11 +31,6 @@ dot:
 	li t3, 0
 	# set product
 	li a7, 0
-	blt a6, a2, loop_start
-
-	ret
-
-
 
 loop_start:
 	beq a6, a2, loop_end 

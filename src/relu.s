@@ -17,9 +17,6 @@ relu:
 	li a4, 1
 	blt a1, a4, relu_exception
 	li a2, 0
-	blt a2, a1, loop_start
-	li a1, 0
-	ret
 
 loop_start:
 	bge a2, a1, loop_end

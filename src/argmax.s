@@ -25,10 +25,6 @@ argmax:
 	# value of max
 	lw a5, 0(a0)
 	lw a6, 0(a0)
-	blt a3, a1, loop_start
-
-	ret 
-
 
 loop_start:
 	bge a3, a1, loop_end
