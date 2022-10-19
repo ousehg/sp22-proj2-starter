@@ -174,7 +174,7 @@ classify:
 	mul t0, t0, t1
 	jal ra, malloc
 	beq a0, zero, malloc_error
-	mv t0, a0
+	mv s3, a0
 
 	# ===========================
 	# Compute o = matmul(m1, h) - matmul
@@ -186,9 +186,8 @@ classify:
 	mv a3, s0
 	mv a4, s4
 	mv a5, s11
-	mv a6, t0
+	mv a6, s3
 	jal ra, matmul # Compute o = matmul(m1, h) - matmul
-	mv s3, a0 # pointer of o
 
 	# ===========================
 	# Write output matrix o
