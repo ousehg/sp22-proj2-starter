@@ -67,7 +67,6 @@ read_matrix:
 	mv a0, s4
 	jal ra, malloc
 	beq a0, zero, malloc_error
-	# s5 = pointer_memory
 	mv s5, a0 # s5 = buffer to read
 
 	# read file
