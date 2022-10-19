@@ -27,126 +27,75 @@
 read_matrix:
 
 	# Prologue
-	# open file
-	addi sp, sp, -12
+	addi sp, sp, -28
 	sw ra, 0(sp)
-	sw a0, 4(sp)
-	sw a1, 8(sp)
-	sw a2, 12(sp)
+	sw s0, 4(sp)
+	sw s1, 8(sp)
+	sw s2, 12(sp)
+	sw s3, 16(sp)
+	sw s4, 20(sp)
+	sw s5, 24(sp)
+	sw s6, 28(sp)
 	
-	li a1, 3
+	mv s0, a0
+	mv s1, a1
+	mv s2, a2
+	
+	# open file
+	li a1, 3 # r+ mode
 	jal ra, fopen
 	li t0, -1
 	beq a0, t0, fopen_error
-	# a3 = file_descriptor
-	mv a3, a0
-	lw ra, 0(sp)
-	lw a0, 4(sp)
-	lw a1, 8(sp)
-	lw a2, 12(sp)
-	addi sp, sp, 12
+	mv s3, a0 # s3 = file_descriptor
 
 	#read the number of row and col
-	addi sp, sp, -16
-	sw ra, 0(sp)
-	sw a0, 4(sp)
-	sw a1, 8(sp)
-	sw a2, 12(sp)
-	sw a3, 16(sp)
-
-	mv a0, a3
+	mv a0, s3
+	mv a1, s1
 	li a2, 8
 	jal ra, fread
 	li t0, 8
 	bne a0, t0, fread_error
 
-	lw ra, 0(sp)
-	lw a0, 4(sp)
-	lw a1, 8(sp)
-	lw a2, 12(sp)
-	lw a3, 16(sp)
-	addi sp, sp, 16
-
 	# malloc
-	lw t0, 0(a1)
-	lw t1, 0(a2)
+	lw t0, 0(s1)
+	lw t1, 0(s2)
 	mul t2, t0, t1
 	li t3, 4
 	mul t2, t2, t3
-	mv a4, t2
+	mv s4, t2 # s4 = bytes to read
 
-	addi sp, sp, -24
-	sw ra, 0(sp)
-	sw a0, 4(sp)
-	sw a1, 8(sp)
-	sw a2, 12(sp)
-	sw a3, 16(sp)
-	sw a4, 20(sp)
-
-	mv a0, a4
+	mv a0, s4
 	jal ra, malloc
 	beq a0, zero, malloc_error
-	# a5 = pointer_memory
-	mv a5, a0 
-	lw ra, 0(sp)
-	lw a0, 4(sp)
-	lw a1, 8(sp)
-	lw a2, 12(sp)
-	lw a3, 16(sp)
-	lw a4, 20(sp)
-	addi sp, sp, 24
+	# s5 = pointer_memory
+	mv s5, a0 # s5 = buffer to read
 
 	# read file
-	addi sp, sp, -28
-	sw ra, 0(sp)
-	sw a0, 4(sp)
-	sw a1, 8(sp)
-	sw a2, 12(sp)
-	sw a3, 16(sp)
-	sw a4, 20(sp)
-	sw a5, 24(sp)
-
-	mv a0, a3
-	mv a1, a5
-	mv a2, a4
+	mv a0, s3
+	mv a1, s5
+	mv a2, s4
 	jal ra, fread
-	# a6 = actual_bytes_read
-	mv a6, a0 
-	lw ra, 0(sp)
-	lw a0, 4(sp)
-	lw a1, 8(sp)
-	lw a2, 12(sp)
-	lw a3, 16(sp)
-	lw a4, 20(sp)
-	lw a5, 24(sp)
-	bne a6, a4, fread_error
-	addi sp, sp, 28
+	mv s6, a0 # s6 = bytes actually read
+	bne s6, s4, fread_error
 
 	# close file
-	addi sp, sp, -28
-	sw ra, 0(sp)
-	sw a0, 4(sp)
-	sw a1, 8(sp)
-	sw a2, 12(sp)
-	sw a3, 16(sp)
-	sw a4, 20(sp)
-	sw a5, 24(sp)
-
-	mv a0, a3
+	mv a0, s3
 	jal ra, fclose
 	li t0, -1
 	beq a0, t0, fclose_error
-	lw ra, 0(sp)
-	lw a0, 4(sp)
-	lw a1, 8(sp)
-	lw a2, 12(sp)
-	lw a3, 16(sp)
-	lw a4, 20(sp)
-	lw a5, 24(sp)
-	addi sp, sp, 28
 
 	# Epilogue
-	mv a0, a5
+	mv a0, s5
+
+	lw ra, 0(sp)
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	lw s2, 12(sp)
+	lw s3, 16(sp)
+	lw s4, 20(sp)
+	lw s5, 24(sp)
+	lw s6, 28(sp)
+	addi sp, sp, 28
 	
 	ret
 
