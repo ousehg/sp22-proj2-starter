@@ -35,7 +35,7 @@ matmul:
 	bne a2, a4, error
 
 	# Prologue
-	addi sp, sp, -40
+	addi sp, sp, -36
 	sw ra, 0(sp)
 	sw s0, 4(sp)
 	sw s1, 8(sp)
@@ -120,7 +120,7 @@ outer_loop_end:
 	lw s6, 28(sp)
 	lw s7, 32(sp)
 	lw s8, 36(sp)
-	addi sp, sp, 40
+	addi sp, sp, 36
 
 	ret
 
