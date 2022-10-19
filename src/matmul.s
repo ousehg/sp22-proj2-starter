@@ -109,10 +109,6 @@ outer_loop_end:
 
 
 	# Epilogue
-	mul t0, s1, s5
-	li t1, 4
-	mul t0, t0, t1
-	sub a0, s6, t0
 
 	lw ra, 0(sp)
 	lw s0, 4(sp)
