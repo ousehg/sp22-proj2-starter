@@ -52,26 +52,26 @@ classify:
 	li a0, 8
 	jal ra, malloc
 	beq a0, zero, malloc_error
-	mv t0, a0
+	mv s5, a0
 
 	# ===========================
 	# Read pretrained m0 - read matrix
 	# ===========================
 
 	lw a0, 4(s1)
-	mv a1, t0
-	mv a2, t0
+	mv a1, s5
+	mv a2, s5
 	addi a2, a2, 4
 	jal ra, read_matrix
 	mv s3, a0 # m0 pointer
-	lw s4, 0(a1) # m0 rows
-	lw s5, 0(a2) # mo cols
+	mv a0, s5 # to free
+	lw s4, 0(s5) # m0 rows
+	lw s5, 4(s5) # mo cols
 
 	# ===========================
 	# Read pretrained m0 - free
 	# ===========================
 
-	mv a0, a1
 	jal ra, free
 
 	# ===========================
@@ -81,26 +81,26 @@ classify:
 	li a0, 8
 	jal ra, malloc
 	beq a0, zero, malloc_error
-	mv t0, a0
+	mv s8, a0
 
 	# ===========================
 	# Read pretrained m1 - read matrix
 	# ===========================
 
 	lw a0, 8(s1)
-	mv a1, t0
-	mv a2, t0
+	mv a1, s8
+	mv a2, s8
 	addi a2, a2, 4
 	jal ra, read_matrix
 	mv s6, a0 # m1 pointer
-	lw s7, 0(a1) # m1 rows
-	lw s8, 4(a1) # m1 cols
+	mv a0, s8 # to free
+	lw s7, 0(s8) # m1 rows
+	lw s8, 4(s8) # m1 cols
 
 	# ===========================
 	# Read pretrained m1 - free
 	# ===========================
 
-	mv a0, a1
 	jal ra, free
 
 	# ===========================
@@ -110,26 +110,26 @@ classify:
 	li a0, 8
 	jal ra, malloc
 	beq a0, zero, malloc_error
-	mv t0, a0
+	mv s11, a0
 
 	# ===========================
 	# Read input matrix -- read
 	# ===========================
 
 	lw a0, 12(s1)
-	mv a1, t0
-	mv a2, t0
+	mv a1, s11
+	mv a2, s11
 	addi a2, a2, 4
 	jal ra, read_matrix
 	mv s9, a0 # input pointer
-	lw s10, 0(a1) # input rows
-	lw s11, 4(a1)  # input cols
+	mv a0, s11 # to free
+	lw s10, 0(s11) # input rows
+	lw s11, 4(s11)  # input cols
 
 	# ===========================
 	# Read input matrix -- free
 	# ===========================
 
-	mv a0, a1
 	jal ra, free
 
 	# ===========================
