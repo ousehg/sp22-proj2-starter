@@ -25,9 +25,9 @@
 #   main.s <M0_PATH> <M1_PATH> <INPUT_PATH> <OUTPUT_PATH>
 classify:
 	li t0, 5
-	bne a0, t0, args_error
-	addi sp, sp, -48
-	sw ra, 0(sp)
+	bne t0, a0, args_error
+
+	addi sp, sp, -52
 	sw s0, 4(sp)
 	sw s1, 8(sp)
 	sw s2, 12(sp)
@@ -40,6 +40,7 @@ classify:
 	sw s9, 40(sp)
 	sw s10, 44(sp)
 	sw s11, 48(sp)
+	sw ra, 52(sp)
 
 	mv s0, a0
 	mv s1, a1
@@ -220,14 +221,14 @@ classify:
 
 	# If enabled, print argmax(o) and newline
 
+	bne s2, zero, else
 	mv a0, s6
-	# beq s2, zero, print_int
-	# mv a0, '\n'
-	# beq s2, zero, print_char
+	jal ra, print_int
+	li a0, '\n'
+	jal ra, print_char
 
-	# mv a0, s6
-
-	lw ra, 0(sp)
+else:
+	mv a0, s6
 	lw s0, 4(sp)
 	lw s1, 8(sp)
 	lw s2, 12(sp)
@@ -240,7 +241,8 @@ classify:
 	lw s9, 40(sp)
 	lw s10, 44(sp)
 	lw s11, 48(sp)
-	addi sp, sp, 48
+	lw ra, 52(sp)
+	addi sp, sp, 52
 
 	ret
 
