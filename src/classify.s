@@ -28,6 +28,7 @@ classify:
 	bne t0, a0, args_error
 
 	addi sp, sp, -52
+	sw ra, 0(sp)
 	sw s0, 4(sp)
 	sw s1, 8(sp)
 	sw s2, 12(sp)
@@ -40,7 +41,6 @@ classify:
 	sw s9, 40(sp)
 	sw s10, 44(sp)
 	sw s11, 48(sp)
-	sw ra, 52(sp)
 
 	mv s0, a0
 	mv s1, a1
@@ -229,6 +229,7 @@ classify:
 
 else:
 	mv a0, s6
+	lw ra, 0(sp)
 	lw s0, 4(sp)
 	lw s1, 8(sp)
 	lw s2, 12(sp)
@@ -241,7 +242,6 @@ else:
 	lw s9, 40(sp)
 	lw s10, 44(sp)
 	lw s11, 48(sp)
-	lw ra, 52(sp)
 	addi sp, sp, 52
 
 	ret
